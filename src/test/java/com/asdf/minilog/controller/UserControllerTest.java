@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +27,9 @@ public class UserControllerTest {
     @Autowired private MockMvc mockMvc;
 
     @MockitoBean private UserService userService;
+
+    @MockitoBean(name = "jpaMappingContext")
+    private JpaMetamodelMappingContext jpaMappingContext;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -39,8 +43,7 @@ public class UserControllerTest {
         UserResponseDto.builder().id(1L).username("Test User").build();
         when(userService.getUsers()).thenReturn(userResponseDtoList);
 
-        mockMvc
-                .perform(get("/api/v1/user"))
+        mockMvc.perform(get("/api/v1/user"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id").value(1L))
@@ -55,8 +58,7 @@ public class UserControllerTest {
                 UserResponseDto.builder().id(1L).username("Test User").build();
         when(userService.getUserById(anyLong())).thenReturn(Optional.of(userResponseDto));
 
-        mockMvc
-                .perform(get("/api/v1/user/1"))
+        mockMvc.perform(get("/api/v1/user/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1L))
@@ -71,8 +73,7 @@ public class UserControllerTest {
                 UserResponseDto.builder().id(1L).username("Test User").build();
         when(userService.createUser(any(UserRequestDto.class))).thenReturn(userResponseDto);
 
-        mockMvc
-                .perform(
+        mockMvc.perform(
                         post("/api/v1/user")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(userRequestDto)))
@@ -88,10 +89,10 @@ public class UserControllerTest {
                 UserRequestDto.builder().username("Test User").password("password").build();
         UserResponseDto userResponseDto =
                 UserResponseDto.builder().id(1L).username("Test User").build();
-        when(userService.updateUser(anyLong(), any(UserRequestDto.class))).thenReturn(userResponseDto);
+        when(userService.updateUser(anyLong(), any(UserRequestDto.class)))
+                .thenReturn(userResponseDto);
 
-        mockMvc
-                .perform(
+        mockMvc.perform(
                         put("/api/v1/user/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(userRequestDto)))
@@ -108,10 +109,10 @@ public class UserControllerTest {
 
     @Test
     public void testGlobalExceptionHandler() throws Exception {
-        when(userService.getUserById(anyLong())).thenThrow(new UserNotFoundException("Test Exception"));
+        when(userService.getUserById(anyLong()))
+                .thenThrow(new UserNotFoundException("Test Exception"));
 
-        mockMvc
-                .perform(get("/api/v1/user/999"))
+        mockMvc.perform(get("/api/v1/user/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Test Exception"));
     }

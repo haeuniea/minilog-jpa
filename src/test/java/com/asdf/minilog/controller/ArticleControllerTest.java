@@ -18,6 +18,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +29,9 @@ public class ArticleControllerTest {
     @Autowired private MockMvc mockMvc;
 
     @MockitoBean private ArticleService articleService;
+
+    @MockitoBean(name = "jpaMappingContext")
+    private JpaMetamodelMappingContext jpaMappingContext;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,8 +53,7 @@ public class ArticleControllerTest {
                         .build();
         when(articleService.createArticle(any(String.class), anyLong())).thenReturn(responseDto);
 
-        mockMvc
-                .perform(
+        mockMvc.perform(
                         post("/api/v1/article")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestDto)))
@@ -75,8 +78,7 @@ public class ArticleControllerTest {
                         .build();
         when(articleService.getArticleById(anyLong())).thenReturn(responseDto);
 
-        mockMvc
-                .perform(get("/api/v1/article/1"))
+        mockMvc.perform(get("/api/v1/article/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.articleId").value(1L))
                 .andExpect(jsonPath("$.content").value("Test Content"))
@@ -99,8 +101,7 @@ public class ArticleControllerTest {
                         .build();
         when(articleService.updateArticle(anyLong(), any(String.class))).thenReturn(responseDto);
 
-        mockMvc
-                .perform(
+        mockMvc.perform(
                         put("/api/v1/article/1")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestDto)))
@@ -130,8 +131,7 @@ public class ArticleControllerTest {
         List<ArticleResponseDto> responseList = Collections.singletonList(responseDto);
         when(articleService.getArticleListByUserId(anyLong())).thenReturn(responseList);
 
-        mockMvc
-                .perform(get("/api/v1/article").param("authorId", "1"))
+        mockMvc.perform(get("/api/v1/article").param("authorId", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].articleId").value(1L))
                 .andExpect(jsonPath("$[0].content").value("Test Content"))
@@ -145,8 +145,7 @@ public class ArticleControllerTest {
         when(articleService.getArticleById(anyLong()))
                 .thenThrow(new ArticleNotFoundException("Article Not Found"));
 
-        mockMvc
-                .perform(get("/api/v1/article/999"))
+        mockMvc.perform(get("/api/v1/article/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Article Not Found"));
     }

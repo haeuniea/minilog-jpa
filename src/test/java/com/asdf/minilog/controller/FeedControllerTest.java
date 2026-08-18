@@ -12,20 +12,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 
 @WebMvcTest(FeedController.class)
 public class FeedControllerTest {
 
     @Autowired private MockMvc mockMvc;
 
-    @MockitoBean
-    private ArticleService articleService;
+    @MockitoBean private ArticleService articleService;
+
+    @MockitoBean(name = "jpaMappingContext")
+    private JpaMetamodelMappingContext jpaMappingContext;
 
     LocalDateTime fixtureDateTime = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
@@ -44,8 +45,7 @@ public class FeedControllerTest {
         when(articleService.getFeedListByFollowerId(anyLong()))
                 .thenReturn(Collections.singletonList(articleResponseDto));
 
-        mockMvc
-                .perform(get("/api/v1/feed?followerId=1"))
+        mockMvc.perform(get("/api/v1/feed?followerId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].articleId").value(1L))
