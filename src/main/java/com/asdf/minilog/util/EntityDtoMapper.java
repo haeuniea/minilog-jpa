@@ -26,10 +26,7 @@ public class EntityDtoMapper {
     }
 
     public static UserResponseDto toDto(User user) {
-        return UserResponseDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .build();
+        return UserResponseDto.builder().id(user.getId()).username(user.getUsername()).build();
     }
 
     public static Follow toEntity(Long followerId, Long followeeId) {
@@ -38,5 +35,4 @@ public class EntityDtoMapper {
                 .followee(User.builder().id(followeeId).build())
                 .build();
     }
-
 }

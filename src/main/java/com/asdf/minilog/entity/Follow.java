@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,14 +20,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(
         name = "follows",
         indexes = {
-                @Index(name = "idx_follower_id", columnList = "follower_id"),
-                @Index(name = "idx_followee_id", columnList = "followee_id")
+            @Index(name = "idx_follower_id", columnList = "follower_id"),
+            @Index(name = "idx_followee_id", columnList = "followee_id")
         },
         uniqueConstraints = {@UniqueConstraint(columnNames = {"follower_id", "followee_id"})})
 @Data

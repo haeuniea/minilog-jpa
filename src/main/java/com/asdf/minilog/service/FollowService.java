@@ -7,12 +7,11 @@ import com.asdf.minilog.exception.UserNotFoundException;
 import com.asdf.minilog.repository.FollowRepository;
 import com.asdf.minilog.repository.UserRepository;
 import com.asdf.minilog.util.EntityDtoMapper;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -38,8 +37,9 @@ public class FollowService {
                         .orElseThrow(
                                 () ->
                                         new UserNotFoundException(
-                                                String.format("팔로어 아이디(%d)를 가진 사용자를 찾을 수 없습니다.", followerId)));
-
+                                                String.format(
+                                                        "팔로어 아이디(%d)를 가진 사용자를 찾을 수 없습니다.",
+                                                        followerId)));
 
         User followee =
                 userRepository
@@ -47,11 +47,12 @@ public class FollowService {
                         .orElseThrow(
                                 () ->
                                         new UserNotFoundException(
-                                                String.format("팔로잉 아이디(%d)를 가진 사용자를 찾을 수 없습니다.", followeeId)));
-
+                                                String.format(
+                                                        "팔로잉 아이디(%d)를 가진 사용자를 찾을 수 없습니다.",
+                                                        followeeId)));
 
         Follow follow =
-                followRepository.save(EntityDtoMapper.toEntity(follower.getId(),followee.getId()));
+                followRepository.save(EntityDtoMapper.toEntity(follower.getId(), followee.getId()));
         return EntityDtoMapper.toDto(follow);
     }
 
@@ -64,7 +65,8 @@ public class FollowService {
                                         () ->
                                                 new UserNotFoundException(
                                                         String.format(
-                                                                "팔로어(%d)와 팔로잉(%d)을 연결하는 Follow를 찾을 수 없습니다.",
+                                                                "팔로어(%d)와 팔로잉(%d)을 연결하는 Follow를 찾을"
+                                                                        + " 수 없습니다.",
                                                                 followerId, followeeId))));
 
         followRepository.delete(follow.get());
@@ -72,11 +74,13 @@ public class FollowService {
 
     @Transactional(readOnly = true)
     public List<FollowResponseDto> getFollowList(Long userId) {
-        if(userRepository.findById(userId).isEmpty()) {
-            throw new UserNotFoundException(String.format("해당 아이디(%d)를 가진 사용자를 찾을 수 없습니다.", userId));
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new UserNotFoundException(
+                    String.format("해당 아이디(%d)를 가진 사용자를 찾을 수 없습니다.", userId));
         }
 
         return followRepository.findByFollowerId(userId).stream()
-                .map(EntityDtoMapper::toDto).toList();
+                .map(EntityDtoMapper::toDto)
+                .toList();
     }
 }
