@@ -159,7 +159,8 @@ Docker를 이용하여 MySQL 컨테이너를 실행합니다.
 docker start mysql-minilog
 ```
 
-> 최초 실행 시에는 프로젝트에서 사용하는 MySQL 컨테이너를 먼저 생성해야 합니다.
+> 최초 실행 시에는 프로젝트에서 사용하는 MySQL 컨테이너를 먼저 생성해야 합니다.  
+> Minilog용 Docker MySQL은 호스트의 `3308` 포트를 사용합니다.
 
 ### 2. 프로젝트 빌드
 
@@ -186,13 +187,13 @@ http://localhost:8080/swagger-ui/index.html
 
 ## 테스트
 
-- MockMvc / Mockito를 이용한 Controller 테스트
-- Testcontainers를 이용한 Service 및 DB 연동 테스트
-- CRUD, 피드 조회, 예외 처리 검증
-
 ```bash
 gradle test
 ```
+
+- MockMvc / Mockito를 이용한 Controller 테스트
+- Testcontainers를 이용한 Service 및 DB 연동 테스트
+- CRUD, 피드 조회, 예외 처리 검증
 
 ## 학습 내용
 
