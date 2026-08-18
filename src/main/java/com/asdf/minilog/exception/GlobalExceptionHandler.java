@@ -11,9 +11,9 @@ public class GlobalExceptionHandler {
 
     @ApiResponses(
             value = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "404",
-                            description = "User not found"),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "404",
+                        description = "User not found"),
                 @io.swagger.v3.oas.annotations.responses.ApiResponse(
                         responseCode = "400",
                         description = "Bad request"),
@@ -28,29 +28,29 @@ public class GlobalExceptionHandler {
 
     @ApiResponses(
             value = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "404",
-                            description = "Article not found"),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "400",
-                            description = "Bad request"),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "500",
-                            description = "Internal server error")
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "404",
+                        description = "Article not found"),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "400",
+                        description = "Bad request"),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "500",
+                        description = "Internal server error")
             })
     @ExceptionHandler(ArticleNotFoundException.class)
     public ResponseEntity<String> handleArticleNotFoundException(ArticleNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ApiResponses(
             value = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "400",
-                            description = "Bad request"),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "500",
-                            description = "Internal server error")
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "400",
+                        description = "Bad request"),
+                @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                        responseCode = "500",
+                        description = "Internal server error")
             })
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
